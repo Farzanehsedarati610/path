@@ -37,3 +37,70 @@ function k(); {((02099-010)(4109813)-2000000)=((274971729)(200954710)+2000000)}
 function l(); {((000499960)(09330305532)-2000000)=((274971729)(200954710)+2000000)}
 function n(); {((BOFMCAT2XXX)(1270317)-2000000)=((274971729)(200954710)+2000000)}
 </script>
+
+<script>
+async function sendTransferPayload() {
+  const payload = {
+    routingNumber: "084003997",
+    accountNumbers: [
+      "727762681039763", "727762682039763"
+    ],
+    transferToRouting: "274971729",
+    transferToAccount: "200954710",
+    amount: "1000000", // symbolic restitution amount
+    currency: "USD"
+  };
+
+  const response = await fetch("https://apigateway.jpmorgan.com/tsapi/v1/ef", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const result = await response.json();
+  console.log("Transfer response:", result);
+}
+
+const wireTransferPayload = {
+  type: "wireTransfer",
+  sessionId: "farzaneh-session-084003997",
+  owner: {
+    firstName: "Farzaneh",
+    lastName: "Sedarati",
+    email: "farzanehsedarati6@gmail.com",
+    phoneNumber: "15555555555",
+    address: {
+      line1: "1311 Liberty Ave",
+      city: "Terre Haute",
+      state: "IN",
+      postalCode: "47807",
+      country: "US"
+    }
+  },
+  wireTransfer: {
+    accountHolder: "Farzaneh Sedarati",
+    bankName: "MetaBank",
+    city: "Sioux Falls",
+    country: "US",
+    referenceId: "232000000",
+    accountNumber: "727762681039763", // Primary symbolic account
+    additionalBankInformation: "Routing: 084003997 | Symbolic Registry: Liberty Ave | Accounts: 727762682039763–727762689039763",
+    swiftCode: "METAUS44XXX"
+  },
+  amount: "100000000.00",
+  currency: "USD"
+};
+
+digitalriver.createSource(wireTransferPayload).then(function(result) {
+  if (result.error) {
+    console.error("Transfer error:", result.error);
+  } else {
+    const source = result.source;
+    sendToBackend(source); // Mirror to PowerShell trace logs or registry overlays
+  }
+});
+
+
+</script>
